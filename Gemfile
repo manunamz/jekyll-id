@@ -6,6 +6,8 @@ source "https://rubygems.org"
 gemspec
 
 gem "jekyll", "~> 4.2.0"
+gem "nanoid", "~> 2.0.0"
+
 gem "rake", "~> 13.0"
 gem "rspec", "~> 3.0"
 gem "rubocop", "~> 1.7"

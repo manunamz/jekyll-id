@@ -8,11 +8,11 @@ Gem::Specification.new do |spec|
   spec.authors       = ["manunamz"]
   spec.email         = ["manunamz@pm.me"]
 
-  spec.summary       = "You thought there was something in here, didn't you? 😉"
+  spec.summary       = "Add unique ID support for jekyll (markdown) documents."
   # spec.description   = "TODO: Write a longer description or delete this line."
   spec.homepage      = "https://github.com/manunamz/jekyll-id"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.4.0")
-  spec.licenses      = ["MIT"]
+  spec.licenses      = ["GPL3"]
 
   # spec.metadata["allowed_push_host"] = "TODO: Set to 'http://mygemserver.com'"
 
@@ -28,6 +28,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "jekyll", "~> 4.2.0"
+  spec.add_dependency "nanoid", "~> 2.0.0"
 
   # For more information and examples about making a new gem, checkout our
   # guide at: https://bundler.io/guides/creating_gem.html
