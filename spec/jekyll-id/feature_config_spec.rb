@@ -12,7 +12,7 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:config) do
     Jekyll.configuration(
       config_overrides.merge(
-        "collections"          => { "docs" => { "output" => true } },
+        # "collections"          => { "docs" => { "output" => true } },
         "permalink"            => "pretty",
         "skip_config_files"    => false,
         "source"               => fixtures_dir,
@@ -26,10 +26,6 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:config_overrides)     { {} }
 
   let(:site)                 { Jekyll::Site.new(config) }
-  let(:doc_root)             { find_by_title(site.collections["docs"].docs, "Root") }
-
-  # makes markdown tests work
-  subject                    { described_class.new(site.config) }
 
   before(:each) do
     site.reset

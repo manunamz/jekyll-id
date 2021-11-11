@@ -1,5 +1,5 @@
 ---
-id: 02e167a957
+id: invalid-format
 title: Has Unformatted ID
 ---
 

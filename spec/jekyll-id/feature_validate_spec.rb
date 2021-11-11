@@ -6,7 +6,7 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:config) do
     Jekyll.configuration(
       config_overrides.merge(
-        "collections"          => { "docs" => { "output" => true } },
+        "collections"          => { "valid" => { "output" => true } },
         "permalink"            => "pretty",
         "skip_config_files"    => false,
         "source"               => fixtures_dir,
@@ -22,7 +22,7 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:site)                         { Jekyll::Site.new(config) }
 
   # jekyll document
-  let(:has_id)                       { find_by_title(site.collections["docs"].docs, "Has ID") }
+  let(:has_id)                       { find_by_title(site.collections["valid"].docs, "Has ID") }
   # path to file
   let(:has_id_rel_path)              { fixtures_dir(has_id.relative_path) }
   # file

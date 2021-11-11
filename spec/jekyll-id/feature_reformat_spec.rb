@@ -6,7 +6,7 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:config) do
     Jekyll.configuration(
       config_overrides.merge(
-        "collections"          => { "docs" => { "output" => true } },
+        "collections"          => { "invalid_format" => { "output" => true } },
         "permalink"            => "pretty",
         "skip_config_files"    => false,
         "source"               => fixtures_dir,
@@ -22,7 +22,7 @@ RSpec.describe(Jekyll::ID::Generator) do
   let(:site)                         { Jekyll::Site.new(config) }
 
   # jekyll document
-  let(:has_unformatted_id)           { find_by_title(site.collections["docs"].docs, "Has Unformatted ID") }
+  let(:has_unformatted_id)           { find_by_title(site.collections["invalid_format"].docs, "Has Unformatted ID") }
   # path to file
   let(:has_unformatted_id_rel_path)  { fixtures_dir(has_unformatted_id.relative_path) }
   # file
