@@ -40,11 +40,27 @@ RSpec.describe(Jekyll::ID::Generator) do
 
   context "VALIDATE ID" do
 
-    it "leaves original id untouched" do
-      # document data
-      expect(has_id.data['id']).to eq("3b8abac659")
-      # file frontmatter
-      expect(has_id_md).to include("---\nid: 3b8abac659")
+    context "lax" do
+
+      it "leaves original id untouched" do
+        # document data
+        expect(has_id.data['id']).to eq("3b8abac659")
+        # file frontmatter
+        expect(has_id_md).to include("---\nid: 3b8abac659")
+      end
+
+    end
+
+    context "strict" do
+      let(:config_overrides)  { { 'ids' => { 'format' => { 'alpha' => '1234567890abcdef', 'size' => 10 } } } }
+
+      it "leaves original id untouched" do
+        # document data
+        expect(has_id.data['id']).to eq("3b8abac659")
+        # file frontmatter
+        expect(has_id_md).to include("---\nid: 3b8abac659")
+      end
+
     end
 
   end

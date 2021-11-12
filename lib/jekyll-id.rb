@@ -51,18 +51,21 @@ module Jekyll
       # helpers
 
       def prep_id(doc)
+        has_id = doc.data.keys.include?('id')
         # 0   == is strict
         # nil == isn't strict
         is_strict_id = (alpha_formatted?(doc.data['id'].to_s) && size_formatted?(doc.data['id'].to_s))
-
-        if !doc.data.keys.include?('id') || (strict? && !(doc.data.keys.include?('id') && is_strict_id))
-          new_id = generate_id
+        case_1 = !has_id                   # no id exists
+        case_2 = strict? && !is_strict_id  # id isn't formatted properly
+        if (case_1 || case_2)
+          new_id = generate_id 
           # populate missing id
-          if !doc.data.keys.include?('id')
+          if case_1
             Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
           # replace invalid format id
-          elsif (strict? && !(doc.data.keys.include?('id') && is_strict_id))
+          elsif case_2
             Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
+          # um...
           else
             Jekyll.logger.warn "Oops...?"
           end
