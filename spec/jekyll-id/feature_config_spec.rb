@@ -75,11 +75,11 @@ RSpec.describe(Jekyll::ID::Generator) do
     context "'exclude' does not process jekyll doc types that are listed" do
       let(:config_overrides) { { "ids" => { "exclude" => [ "invalid_format" ] } } }
 
-      it "does not process ids for those types" do
+      it "excluded, unprocessed types" do
         expect(has_unformatted_id.data['id']).to eq('invalid-format')
       end
 
-      it "does process ids for unexcluded types" do
+      it "included, processed types" do
         expect(has_no_id.data.keys).to include('id')
       end
 

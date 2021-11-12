@@ -14,7 +14,7 @@ module Jekyll
       # for testing
       attr_reader :config
       
-      # CONVERTER_CLASS = Jekyll::Converters::Markdown
+      CONVERTER_CLASS = Jekyll::Converters::Markdown
       # config
       CONFIG_KEY = "ids"
       ENABLED_KEY = "enabled"
@@ -34,10 +34,16 @@ module Jekyll
         @site = site
         @yesall = false # for writing strict ids to file frontmatter
 
-        # 'instace_of?' is used to make sure we don't accidentally suck in static files that are stored in document directoreis
-        # md_docs = @site.documents.filter { |d| (d.instance_of? Jekyll::Document) && (d.type == :posts || d.type == :entries || d.type == :states || d.type == :books) }
-        md_docs = @site.documents
-        md_docs.each do |cur_doc|
+        markdown_converter = site.find_converter_instance(CONVERTER_CLASS)
+        # filter docs based on configs
+        docs = []
+        docs += site.docs_to_write.filter { |d| !exclude?(d.type) }
+        @md_docs = docs.filter { |doc| markdown_converter.matches(doc.extname) }
+        if @md_docs.nil? || @md_docs.empty?
+          Jekyll.logger.debug("No documents to process.")
+        end
+
+        @md_docs.each do |cur_doc|
           # validation and sanitization
           prep_doc(cur_doc)
         end
@@ -90,6 +96,7 @@ module Jekyll
           if @testing || @yesall || cont.strip == "yes"
             lines = IO.readlines(doc.path)
             lines.delete_if { |l| l.include?("id: #{doc.data['id']}") }
+            # insert after first frontmatter "---"
             lines.insert(1, "id: #{new_id}\n")
             File.open(doc.path, 'w') do |file|
               file.puts lines
@@ -138,6 +145,11 @@ module Jekyll
 
       def disabled?
         option(ENABLED_KEY) == false
+      end
+
+      def exclude?(type)
+        return false unless option(EXCLUDE_KEY)
+        return option(EXCLUDE_KEY).include?(type.to_s)
       end
 
       def option(key)
