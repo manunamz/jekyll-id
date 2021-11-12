@@ -10,6 +10,9 @@ module Jekyll
 
     class Generator < Jekyll::Generator
       priority :highest
+
+      # for testing
+      attr_reader :config
       
       # CONVERTER_CLASS = Jekyll::Converters::Markdown
       # config
@@ -22,10 +25,12 @@ module Jekyll
 
       def initialize(config)
         @config ||= config
-        @testing = config['testing'].nil? ? false : config['testing']
+        @testing ||= config['testing'].nil? ? false : config['testing']
       end
 
       def generate(site)
+        return if disabled?
+
         @site = site
         @yesall = false # for writing strict ids to file frontmatter
 
@@ -109,7 +114,16 @@ module Jekyll
         return false
       end
 
-      # def generate(site)
+      # config helpers
+
+      def disabled?
+        option(ENABLED_KEY) == false
+      end
+
+      def option(key)
+        @config[CONFIG_KEY] && @config[CONFIG_KEY][key]
+      end
+
 
     end
 
