@@ -74,6 +74,15 @@ module Jekyll
         end
       end
 
+      def generate_id
+        has_size  = (size.size != 0)
+        has_alpha = (alpha.size != 0)
+        return Nanoid.generate                              if !strict?
+        return Nanoid.generate(size: size, alphabet: alpha) if has_size && has_alpha
+        return Nanoid.generate(size: size)                  if has_size && !has_alpha
+        return Nanoid.generate(alphabet: alpha)             if !has_size && has_alpha
+      end
+
       def request
         if !@yesall
           Jekyll.logger.info("> Is that ok?")
@@ -95,17 +104,7 @@ module Jekyll
         end
       end
 
-      # 'getters'
-
-      def alpha
-        return option_format(ALPHA_KEY).nil? ? '' : option_format(ALPHA_KEY)
-      end
-
-      def size
-        return option_format(SIZE_KEY).nil? ? '' : option_format(SIZE_KEY)
-      end
-
-      # helpers
+      # descriptor methods
       
       def alpha_formatted?(id)
         return true if !option_format(ALPHA_KEY)
@@ -121,13 +120,14 @@ module Jekyll
         return option(FORMAT_KEY) && (option_format(SIZE_KEY) || option_format(ALPHA_KEY))
       end
 
-      def generate_id
-        has_size  = (size.size != 0)
-        has_alpha = (alpha.size != 0)
-        return Nanoid.generate                              if !strict?
-        return Nanoid.generate(size: size, alphabet: alpha) if has_size && has_alpha
-        return Nanoid.generate(size: size)                  if has_size && !has_alpha
-        return Nanoid.generate(alphabet: alpha)             if !has_size && has_alpha
+      # 'getters'
+
+      def alpha
+        return option_format(ALPHA_KEY).nil? ? '' : option_format(ALPHA_KEY)
+      end
+
+      def size
+        return option_format(SIZE_KEY).nil? ? '' : option_format(SIZE_KEY)
       end
 
       # config helpers
