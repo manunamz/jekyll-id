@@ -2,6 +2,7 @@
 require 'jekyll'
 require 'nanoid'
 
+require_relative "jekyll-id/patch/url_drop"
 require_relative "jekyll-id/version"
 
 module Jekyll
@@ -92,8 +93,6 @@ module Jekyll
         return Nanoid.generate if !self.strict_id?
         return Nanoid.generate(size: @site.config['ids']['format']['size'], alphabet: @site.config['ids']['format']['alpha'])
       end
-
-      # def populate_permalink(doc)
 
       def format
         return /^[#{@site.config['ids']['format']['alpha']}]{#{@site.config['ids']['format']['size']}}$/
