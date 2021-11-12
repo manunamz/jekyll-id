@@ -49,7 +49,7 @@ module Jekyll
         # 
         # generate
         if !doc.data.keys.include?('id')
-          new_id = self.generate_id
+          new_id = generate_id
           Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
           if !@testing && !@yesall
             Jekyll.logger.info("Is that ok?")
@@ -71,8 +71,13 @@ module Jekyll
         end
         # verify format
         doc.data['id'] = doc.data['id'].to_s
-        if strict_id? && !(doc.data['id'] =~ format)
-          new_id = self.generate_id
+        
+                        # 0   == is strict
+                        # nil == isn't strict
+        is_strict_id = (alpha_formatted?(doc.data['id']) && size_formatted?(doc.data['id']))
+
+        if strict? && !(doc.data.keys.include?('id') && is_strict_id)
+          new_id = generate_id
           Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
           if !@testing && !@yesall
             Jekyll.logger.info("> Is that ok?")
@@ -94,24 +99,39 @@ module Jekyll
         end
       end
 
+      # 'getters'
+
+      def alpha
+        return option_format(ALPHA_KEY).nil? ? '' : option_format(ALPHA_KEY)
+      end
+
+      def size
+        return option_format(SIZE_KEY).nil? ? '' : option_format(SIZE_KEY)
+      end
+
+      # helpers
+      
+      def alpha_formatted?(id)
+        return true if !option_format(ALPHA_KEY)
+        return id.chars.all? { |char| alpha.include?(char) }
+      end
+
+      def size_formatted?(id)
+        return true if !option_format(SIZE_KEY)
+        return id.size == size
+      end
+
+      def strict?
+        return option(FORMAT_KEY) && (option_format(SIZE_KEY) || option_format(ALPHA_KEY))
+      end
+
       def generate_id
-        return Nanoid.generate if !self.strict_id?
-        return Nanoid.generate(size: @site.config['ids']['format']['size'], alphabet: @site.config['ids']['format']['alpha'])
-      end
-
-      def format
-        return /^[#{@site.config['ids']['format']['alpha']}]{#{@site.config['ids']['format']['size']}}$/
-      end
-
-      def strict_id?
-        if @site.config.keys.include?('ids')
-          if @site.config['ids'].keys.include?('format')
-            if @site.config['ids']['format'].keys.include?('alpha') && @site.config['ids']['format'].include?('size')
-              return true
-            end
-          end
-        end
-        return false
+        has_size  = (size.size != 0)
+        has_alpha = (alpha.size != 0)
+        return Nanoid.generate                              if !strict?
+        return Nanoid.generate(size: size, alphabet: alpha) if has_size && has_alpha
+        return Nanoid.generate(size: size)                  if has_size && !has_alpha
+        return Nanoid.generate(alphabet: alpha)             if !has_size && has_alpha
       end
 
       # config helpers
@@ -124,6 +144,9 @@ module Jekyll
         @config[CONFIG_KEY] && @config[CONFIG_KEY][key]
       end
 
+      def option_format(key)
+        @config[CONFIG_KEY] && @config[CONFIG_KEY][FORMAT_KEY] && @config[CONFIG_KEY][FORMAT_KEY][key]
+      end
 
     end
 

@@ -55,22 +55,59 @@ RSpec.describe(Jekyll::ID::Generator) do
     end
 
     context "strict" do
-      let(:config_overrides)  { { 'ids' => { 'format' => { 'alpha' => '1234567890abcdef', 'size' => 10 } } } }
 
-      it "reformats id to desired format" do
-        expect(has_unformatted_id.data['id']).to_not eq("invalid-format")
-        # file frontmatter
-        expect(has_unformatted_id_md).to include("---\nid: ")
-        expect(has_unformatted_id_md).to include(has_unformatted_id.data['id'])
+      context "both 'alpha' and 'size' defined" do
+        let(:config_overrides)  { { 'ids' => { 'format' => { 'alpha' => '1234567890abcdef', 'size' => 10 } } } }
+
+        it "reformats id to desired format" do
+          expect(has_unformatted_id.data['id']).to_not eq("invalid-format")
+          # file frontmatter
+          expect(has_unformatted_id_md).to include("---\nid: ")
+          expect(has_unformatted_id_md).to include(has_unformatted_id.data['id'])
+        end
+
+        it "with desired 'alpha' setting" do
+          id_chars_all_in_alpha = has_unformatted_id.data['id'].chars.all? { |char| '1234567890abcdef'.include?(char) }
+          expect(id_chars_all_in_alpha).to be_truthy
+        end
+
+        it "with desired 'size' setting" do
+          expect(has_unformatted_id.data['id'].size).to eq(10)
+        end
+
       end
 
-      it "with desired 'alpha' setting" do
-        id_chars_all_in_alpha = has_unformatted_id.data['id'].chars.all? { |char| '1234567890abcdef'.include?(char) }
-        expect(id_chars_all_in_alpha).to be_truthy
+      context "only 'alpha'" do
+        let(:config_overrides)  { { 'ids' => { 'format' => { 'alpha' => '1234567890abcdef' } } } }
+
+        it "reformats id to desired format" do
+          expect(has_unformatted_id.data['id']).to_not eq("invalid-format")
+          # file frontmatter
+          expect(has_unformatted_id_md).to include("---\nid: ")
+          expect(has_unformatted_id_md).to include(has_unformatted_id.data['id'])
+        end
+
+        it "with desired 'alpha' setting" do
+          id_chars_all_in_alpha = has_unformatted_id.data['id'].chars.all? { |char| '1234567890abcdef'.include?(char) }
+          expect(id_chars_all_in_alpha).to be_truthy
+        end
+
       end
 
-      it "with desired 'size' setting" do
-        expect(has_unformatted_id.data['id'].size).to eq(10)
+      context "only 'size'" do
+        let(:config_overrides)  { { 'ids' => { 'format' => { 'size' => 10 } } } }
+
+        it "reformats id to desired format" do
+          expect(has_unformatted_id.data['id']).to_not eq("invalid-format")
+          # file frontmatter
+          expect(has_unformatted_id_md).to include("---\nid: ")
+          expect(has_unformatted_id_md).to include(has_unformatted_id.data['id'])
+        end
+
+        it "with desired 'size' setting" do
+          expect(has_unformatted_id.data['id'].size).to eq(10)
+        end
+
       end
     
     end
