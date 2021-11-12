@@ -33,6 +33,7 @@ module Jekyll
 
         @site = site
         @yesall = false
+        @noall = false
 
         markdown_converter = site.find_converter_instance(CONVERTER_CLASS)
         # filter docs based on configs
@@ -70,7 +71,7 @@ module Jekyll
             Jekyll.logger.warn "Oops...?"
           end
           resp = request if !@testing
-          if @testing || @yesall || resp == "yes"
+          if @testing || ((@yesall || resp == "yes") && !@noall)
             write_id(doc, new_id)
             doc.data['id'] = new_id
           end
@@ -87,12 +88,12 @@ module Jekyll
       end
 
       def request
-        if !@yesall
+        if !@yesall && !@noall
           Jekyll.logger.info("> Is that ok?")
-          Jekyll.logger.info("> (yes, no, or yesall)")
+          Jekyll.logger.info("> (yes, no, yesall, or noall)")
           cont = gets
           if cont.strip == "yesall"
-            @yesall = true 
+            @yesall = true
           end
           return cont.strip
         end
