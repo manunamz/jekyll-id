@@ -32,7 +32,7 @@ module Jekyll
         return if disabled?
 
         @site = site
-        @yesall = false # for writing strict ids to file frontmatter
+        @yesall = false
 
         markdown_converter = site.find_converter_instance(CONVERTER_CLASS)
         # filter docs based on configs
@@ -43,66 +43,55 @@ module Jekyll
           Jekyll.logger.debug("No documents to process.")
         end
 
-        @md_docs.each do |cur_doc|
-          # validation and sanitization
-          prep_doc(cur_doc)
+        @md_docs.each do |doc|
+          prep_id(doc)
         end
       end
 
-      def prep_doc(doc)
-        # 
-        # ID: if using strict ids, make sure ids are proper nano id format
-        # 
-        # generate
-        if !doc.data.keys.include?('id')
+      # helpers
+
+      def prep_id(doc)
+        # 0   == is strict
+        # nil == isn't strict
+        is_strict_id = (alpha_formatted?(doc.data['id'].to_s) && size_formatted?(doc.data['id'].to_s))
+
+        if !doc.data.keys.include?('id') || (strict? && !(doc.data.keys.include?('id') && is_strict_id))
           new_id = generate_id
-          Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
-          if !@testing && !@yesall
-            Jekyll.logger.info("Is that ok?")
-            Jekyll.logger.info("(yes, no, or yesall)")
-            cont = gets
-            if cont.strip == "yesall"
-              @yesall = true 
-            end
+          # populate missing id
+          if !doc.data.keys.include?('id')
+            Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
+          # replace invalid format id
+          elsif (strict? && !(doc.data.keys.include?('id') && is_strict_id))
+            Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
+          else
+            Jekyll.logger.warn "Oops...?"
           end
-          if @testing || @yesall || cont.strip == "yes"
-            lines = IO.readlines(doc.path)
-            lines.delete_if { |l| l.include?("id: #{doc.data['id']}") }
-            lines.insert(1, "id: #{new_id}\n")
-            File.open(doc.path, 'w') do |file|
-              file.puts lines
-            end
+          resp = request if !@testing
+          if @testing || @yesall || resp == "yes"
+            write_id(doc, new_id)
             doc.data['id'] = new_id
           end
         end
-        # verify format
-        doc.data['id'] = doc.data['id'].to_s
-        
-                        # 0   == is strict
-                        # nil == isn't strict
-        is_strict_id = (alpha_formatted?(doc.data['id']) && size_formatted?(doc.data['id']))
+      end
 
-        if strict? && !(doc.data.keys.include?('id') && is_strict_id)
-          new_id = generate_id
-          Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
-          if !@testing && !@yesall
-            Jekyll.logger.info("> Is that ok?")
-            Jekyll.logger.info("> (yes, no, or yesall)")
-            cont = gets
-            if cont.strip == "yesall"
-              @yesall = true 
-            end
+      def request
+        if !@yesall
+          Jekyll.logger.info("> Is that ok?")
+          Jekyll.logger.info("> (yes, no, or yesall)")
+          cont = gets
+          if cont.strip == "yesall"
+            @yesall = true 
           end
-          if @testing || @yesall || cont.strip == "yes"
-            lines = IO.readlines(doc.path)
-            lines.delete_if { |l| l.include?("id: #{doc.data['id']}") }
-            # insert after first frontmatter "---"
-            lines.insert(1, "id: #{new_id}\n")
-            File.open(doc.path, 'w') do |file|
-              file.puts lines
-            end
-            doc.data['id'] = new_id
-          end
+          return cont.strip
+        end
+      end
+
+      def write_id(doc, id) 
+        lines = IO.readlines(doc.path)
+        lines.delete_if { |l| l.include?("id: #{doc.data['id']}") }
+        lines.insert(1, "id: #{id}\n")
+        File.open(doc.path, 'w') do |file|
+          file.puts lines
         end
       end
 
