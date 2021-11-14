@@ -52,6 +52,7 @@ module Jekyll
       # helpers
 
       def prep_id(doc)
+        return if @noall
         has_id = doc.data.keys.include?('id')
         # 0   == is strict
         # nil == isn't strict
@@ -94,6 +95,10 @@ module Jekyll
           cont = gets
           if cont.strip == "yesall"
             @yesall = true
+          elsif cont.strip == "noall"
+            @noall = true
+          else
+            Jekyll.logger.error "Invalid response"
           end
           return cont.strip
         end
