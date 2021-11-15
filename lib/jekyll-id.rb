@@ -41,7 +41,7 @@ module Jekyll
         docs += site.docs_to_write.filter { |d| !exclude?(d.type) }
         @md_docs = docs.filter { |doc| markdown_converter.matches(doc.extname) }
         if @md_docs.nil? || @md_docs.empty?
-          Jekyll.logger.warn("No documents to process.")
+          Jekyll.logger.warn("Jekyll-ID: No documents to process.")
         end
 
         @md_docs.each do |doc|
@@ -69,7 +69,7 @@ module Jekyll
             Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
           # um...
           else
-            Jekyll.logger.warn("Oops...?")
+            Jekyll.logger.warn("Jekyll-ID: Oops...?")
           end
           resp = request if !@testing
           if @testing || ((@yesall || resp == "yes") && !@noall)
@@ -98,7 +98,7 @@ module Jekyll
           elsif cont.strip == "noall"
             @noall = true
           else
-            Jekyll.logger.error("Invalid response")
+            Jekyll.logger.error("Jekyll-ID: Invalid response")
           end
           return cont.strip
         end
