@@ -66,7 +66,7 @@ module Jekyll
             Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
           # replace invalid format id
           elsif case_2
-            Jekyll.logger.info("\n> Replacing #{doc.inspect}'s frontmatter\n> ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
+            Jekyll.logger.info("\n> Replacing frontmatter for:\n> #{doc.inspect}\nwith ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
           # um...
           else
             Jekyll.logger.warn("Jekyll-ID: Oops...?")
