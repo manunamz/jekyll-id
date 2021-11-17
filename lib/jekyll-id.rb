@@ -57,10 +57,11 @@ module Jekyll
         # 0   == is strict
         # nil == isn't strict
         is_strict_id = (alpha_formatted?(doc.data['id'].to_s) && size_formatted?(doc.data['id'].to_s))
+        # cases where we would want to generate a new id
         case_1 = !has_id                   # no id exists
         case_2 = strict? && !is_strict_id  # id isn't formatted properly
         if (case_1 || case_2)
-          new_id = generate_id 
+          new_id = generate_id.to_s 
           # populate missing id
           if case_1
             Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
