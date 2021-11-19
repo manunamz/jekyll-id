@@ -8,7 +8,8 @@ module Jekyll
     class UrlDrop
       
       def id
-        @obj.data['id']
+        # 'to_s' is necessary for scenarios where all ID chars are numbers
+        @obj.data['id'].to_s
       end
 
     end
