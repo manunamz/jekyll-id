@@ -96,8 +96,14 @@ module Jekyll
           cont = gets
           if cont.strip == "yesall"
             @yesall = true
+            Jekyll.logger.info("> Handle all IDs...")
           elsif cont.strip == "noall"
             @noall = true
+            Jekyll.logger.info("> Leaving all IDs alone...")
+          elsif cont.strip == "yes" 
+            Jekyll.logger.info("> Handling ID...")
+          elsif cont.strip == "no"
+            Jekyll.logger.info("> Leaving ID alone...")
           else
             Jekyll.logger.error("Jekyll-ID: Invalid response")
           end
