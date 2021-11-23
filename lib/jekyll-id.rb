@@ -64,13 +64,13 @@ module Jekyll
           new_id = generate_id.to_s 
           # populate missing id
           if case_1
-            Jekyll.logger.info("\n> Generate frontmatter ID: '#{new_id}' for #{doc.inspect}.")
+            Jekyll.logger.info("\n> Generate frontmatter ID for \n> #{doc.inspect}\n>with new ID: '#{new_id}'")
           # replace invalid format id
           elsif case_2
-            Jekyll.logger.info("\n> Replacing frontmatter for:\n> #{doc.inspect}\nwith ID:'#{doc.data['id']}' with new-ID:'#{new_id}'.")
+            Jekyll.logger.info("\n> Replace frontmatter ID for:\n> #{doc.inspect}\n> from:'#{doc.data['id']}'\n> to:'#{new_id}'")
           # um...
           else
-            Jekyll.logger.warn("Jekyll-ID: Oops...?")
+            Jekyll.logger.warn("Jekyll-ID: Invalid ID case")
           end
           resp = request if !@testing
           if @testing || ((@yesall || resp == "yes") && !@noall)
@@ -91,7 +91,7 @@ module Jekyll
 
       def request
         if !@yesall && !@noall
-          Jekyll.logger.info("> Is that ok?")
+          Jekyll.logger.info("\n> Is that ok?")
           Jekyll.logger.info("> (yes, no, yesall, or noall)")
           cont = gets
           if cont.strip == "yesall"
@@ -105,7 +105,7 @@ module Jekyll
           elsif cont.strip == "no"
             Jekyll.logger.info("> Leaving ID alone...")
           else
-            Jekyll.logger.error("Jekyll-ID: Invalid response")
+            Jekyll.logger.error("Jekyll-ID: Invalid response. Skipping...")
           end
           return cont.strip
         end
