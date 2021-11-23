@@ -44,12 +44,12 @@ ids:
 
 `format`: set format parameters, available fields are `alpha` and `size`, see [nanoid docs](https://github.com/radeno/nanoid.rb) for details.
 
-ex:
+[nanoid defaults](https://github.com/radeno/nanoid.rb#default-options):
 ```yaml
 ids:
   format:
-    alpha: '1234567890abcdef'
-    size: 10
+    alpha: '_-0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ'
+    size: 21
 ```
 
 ## Usage
