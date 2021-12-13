@@ -8,7 +8,7 @@ Jekyll-ID adds ID support for jekyll markdown documents. These IDs do not change
 
 [Nanoid](https://github.com/radeno/nanoid.rb) is used to validate ID format and generate IDs.
 
-This gem is part of the [jekyll-bonsai](https://manunamz.github.io/jekyll-bonsai/) project. 🎋
+This gem is part of the [jekyll-bonsai](https://jekyll-bonsai.netlify.app/) project. 🎋
 
 ⚠️ This plugin is meant to write directly to markdown files. Always be sure to backup data and use version control.
 ## Installation
